@@ -482,8 +482,7 @@ class Ceramic implements CeramicApi {
    * @param opts - Initialization options
    */
   async applyCommit<T extends Doctype>(docId: string | DocID, commit: CeramicCommit, opts?: DocOpts): Promise<T> {
-    const state$ = await this._loadDoc(normalizeDocID(docId), opts)
-    await this.repository.stateManager.applyCommit(state$, commit, opts)
+    const state$ = await this.repository.stateManager.applyCommit(normalizeDocID(docId), commit, opts)
     return doctypeFromState<T>(this.context, this._doctypeHandlers, state$.value, this.repository.updates$)
   }
 
