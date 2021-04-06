@@ -23,6 +23,17 @@ export const DEFAULT_LOAD_DOCOPTS = { anchor: false, publish: false, sync: true 
 export const DEFAULT_WRITE_DOCOPTS = { anchor: true, publish: true, sync: false };
 
 export class StateManager {
+
+  /**
+   * @param dispatcher - currently used instance of Dispatcher
+   * @param pinStore - currently used instance of PinStore
+   * @param executionQ - currently used instance of ExecutionQueue
+   * @param anchorService - currently used instance of AnchorService
+   * @param conflictResolution - currently used instance of ConflictResolution
+   * @param logger - Logger
+   * @param fromMemoryOrStore - load RunningState from in-memory cache or from state store, see `Repository#get`.
+   * @param load - `Repository#load`
+   */
   constructor(
     private readonly dispatcher: Dispatcher,
     private readonly pinStore: PinStore,
@@ -30,7 +41,7 @@ export class StateManager {
     public anchorService: AnchorService,
     public conflictResolution: ConflictResolution,
     private readonly logger: DiagnosticsLogger,
-    private readonly get: (docId: DocID) => Promise<RunningState | undefined>,
+    private readonly fromMemoryOrStore: (docId: DocID) => Promise<RunningState | undefined>,
     private readonly load: (docId: DocID, opts?: DocOpts) => Promise<RunningState>,
   ) {}
 
@@ -126,7 +137,7 @@ export class StateManager {
    */
   update(docId: DocID, tip: CID): void {
     this.executionQ.forDocument(docId).add(async () => {
-      const state$ = await this.get(docId);
+      const state$ = await this.fromMemoryOrStore(docId);
       if (state$) await this.handleTip(state$, tip);
     });
   }
