@@ -1,4 +1,6 @@
 import * as u8a from 'uint8arrays'
+import multicodec from 'multicodec'
+import  multibase from'multibase'
 
 /**
  * Constructs the document based on the method key
@@ -6,6 +8,7 @@ import * as u8a from 'uint8arrays'
 export function keyToDidDoc (pubKeyBytes: Uint8Array, fingerprint: string): any {
   const did = `did:key:${fingerprint}`
   const keyId = `${did}#${fingerprint}`
+  const key = fingerprintToXY(fingerprint);
   return {
     id: did,
     verificationMethod: [{
@@ -15,14 +18,37 @@ export function keyToDidDoc (pubKeyBytes: Uint8Array, fingerprint: string): any 
       publicKeyJwK: {
          kty: "EC",
 	 crv: "P-256",
-	 x:
-	 y:
+	 x: key.xm,
+	 y: key.ym,
       }, 
-      /* publicKeyBase58: u8a.toString(pubKeyBytes, "base58btc"), */
+      /* publicKeyBase58: u8a.u8a.toString(pubKeyBytes, "base58btc"), */
     }],
     authentication: [keyId],
     assertionMethod: [keyId],
     capabilityDelegation: [keyId],
     capabilityInvocation: [keyId],
   }
+  }
+
+function fingerprintToHex(fingerprint) {
+ const buf = multibase.decode(fingerprint)
+ const bufnoPrefix = multicodec.rmPrefix(buf)
+ const bbf = u8a.toString(bufnoPrefix,'base16')
+ return bbf;
+}
+
+function publicKeyToXY(publicKeyHex) {
+ const xHex = publicKeyHex.slice(0,publicKeyHex.length/2);
+ const yHex = publicKeyHex.slice(publicKeyHex.length/2,publicKeyHex.length);
+ xOctet = u8a.fromString(xHex,'base16');
+ yOctet = u8a.fromString(yHex,'base16');
+ xm = u8a.toString(multibase.encode('base64url',xOctet));
+ ym = u8a.toString(multibase.encode('base64url',yOctet));
+ return { xm, ym };
+}
+
+function fingerprintToXY(fingerprint) {
+ const publicKeyHex = fingerprintToHex(fingerprint);
+ const XYpairObject = publicKeyToXY(publicKeyHex);
+ return XYpairObject;
 }
