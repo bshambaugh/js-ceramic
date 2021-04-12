@@ -23,9 +23,9 @@ Object {
         "kty": "EC", 
         "crv": "P-256", 
         "x": "u-cNviWRiM3i9wGjUvOB-0XyPpIb5rAwmE8o8jDBte7Y", 
-        "y": "uHNNnF7isXk_qitI9yNB4PCMY7krXqA224AJq0LByok8" 
-        }
-        "type": ""JsonWebKey2020",
+        "y": "uHNNnF7isXk_qitI9yNB4PCMY7krXqA224AJq0LByok8", 
+        },
+        "type": "JsonWebKey2020",
     },
   ],
 }

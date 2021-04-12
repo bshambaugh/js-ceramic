@@ -17,9 +17,9 @@ export function keyToDidDoc (pubKeyBytes: Uint8Array, fingerprint: string): any 
       controller: did,
       publicKeyJwK: {
          kty: "EC",
-	 crv: "P-256",
-	 x: key.xm,
-	 y: key.ym,
+	       crv: "P-256",
+	       x: key.xm,
+	       y: key.ym,
       }, 
       /* publicKeyBase58: u8a.u8a.toString(pubKeyBytes, "base58btc"), */
     }],
@@ -40,10 +40,10 @@ function fingerprintToHex(fingerprint) {
 function publicKeyToXY(publicKeyHex) {
  const xHex = publicKeyHex.slice(0,publicKeyHex.length/2);
  const yHex = publicKeyHex.slice(publicKeyHex.length/2,publicKeyHex.length);
- xOctet = u8a.fromString(xHex,'base16');
- yOctet = u8a.fromString(yHex,'base16');
- xm = u8a.toString(multibase.encode('base64url',xOctet));
- ym = u8a.toString(multibase.encode('base64url',yOctet));
+ const xOctet = u8a.fromString(xHex,'base16');
+ const yOctet = u8a.fromString(yHex,'base16');
+ const xm = u8a.toString(multibase.encode('base64url',xOctet));
+ const ym = u8a.toString(multibase.encode('base64url',yOctet));
  return { xm, ym };
 }
 
