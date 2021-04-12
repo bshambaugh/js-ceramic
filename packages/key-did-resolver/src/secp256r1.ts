@@ -16,12 +16,11 @@ export function keyToDidDoc (pubKeyBytes: Uint8Array, fingerprint: string): any 
       type: 'JsonWebKey2020',
       controller: did,
       publicKeyJwK: {
-         kty: "EC",
+               kty: "EC",
 	       crv: "P-256",
 	       x: key.xm,
 	       y: key.ym,
       }, 
-      /* publicKeyBase58: u8a.u8a.toString(pubKeyBytes, "base58btc"), */
     }],
     authentication: [keyId],
     assertionMethod: [keyId],
