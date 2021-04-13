@@ -16,3 +16,4 @@ describe('Secp256r1 mapper', () => {
 
 })
 
+console.log(JSON.stringify({"test": {}}))
