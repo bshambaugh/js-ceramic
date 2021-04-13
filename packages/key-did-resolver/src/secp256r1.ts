@@ -8,14 +8,14 @@ import  multibase from'multibase'
 export function keyToDidDoc (pubKeyBytes: Uint8Array, fingerprint: string): any {
   const did = `did:key:${fingerprint}`
   const keyId = `${did}#${fingerprint}`
-  const key = fingerprintToXY(fingerprint);
+  const key = pubKeyBytesToXY(pubKeyBytes);
   return {
     id: did,
     verificationMethod: [{
       id: keyId,
       type: 'JsonWebKey2020',
       controller: did,
-      publicKeyJwK: {
+       publicKeyJwK: {
          kty: "EC",
 	       crv: "P-256",
 	       x: key.xm,
@@ -29,14 +29,12 @@ export function keyToDidDoc (pubKeyBytes: Uint8Array, fingerprint: string): any 
   }
   }
 
-function fingerprintToHex(fingerprint) {
- const buf = multibase.decode(fingerprint)
- const bufnoPrefix = multicodec.rmPrefix(buf)
- const bbf = u8a.toString(bufnoPrefix,'base16')
+function pubKeyBytesToHex(pubKeyBytes: Uint8Array) {
+ const bbf = u8a.toString(pubKeyBytes,'base16')
  return bbf;
 }
 
-function publicKeyToXY(publicKeyHex) {
+function publicKeyToXY(publicKeyHex: string) {
  const xHex = publicKeyHex.slice(0,publicKeyHex.length/2);
  const yHex = publicKeyHex.slice(publicKeyHex.length/2,publicKeyHex.length);
  const xOctet = u8a.fromString(xHex,'base16');
@@ -46,8 +44,8 @@ function publicKeyToXY(publicKeyHex) {
  return { xm, ym };
 }
 
-function fingerprintToXY(fingerprint) {
- const publicKeyHex = fingerprintToHex(fingerprint);
+function pubKeyBytesToXY(pubKeyBytes: Uint8Array) {
+ const publicKeyHex = pubKeyBytesToHex(pubKeyBytes);
  const XYpairObject = publicKeyToXY(publicKeyHex);
  return XYpairObject;
 }
