@@ -15,7 +15,7 @@ export function keyToDidDoc (pubKeyBytes: Uint8Array, fingerprint: string): any 
       id: keyId,
       type: 'JsonWebKey2020',
       controller: did,
-       publicKeyJwK: {
+       publicKeyJwk: {
          kty: "EC",
 	       crv: "P-256",
 	       x: key.xm,
