@@ -37,8 +37,5 @@
     "printWidth": 120,
     "trailingComma": "all",
     "singleQuote": true
-  },
-  "dependencies": {
-    "@mapbox/node-pre-gyp": "^1.0.3"
   }
 }
