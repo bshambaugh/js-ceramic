@@ -69,45 +69,129 @@ test('expect ECPointDecompress to throw an error for null', () => {
 test('expect publicKeyIntToXY to throw an error for incorrect type', () => {
       expect(() => {
       mapper.publicKeyIntToXY(5);
-      }).toThrowError('input cannot be null or undefined.');
+      }).toThrowError('Input must be an object with properties x and y');
 });
 
 test('expect publicKeyIntToXY to throw an error for {x: null, y: null}', () => {
       expect(() => {
       mapper.publicKeyIntToXY({x: null, y: null});
-      }).toThrowError('input cannot be null or undefined.');
+      }).toThrowError('Input coordinates must be BigInt');
+});
+
+test('expect publicKeyIntToXY to have properties x and y', () => {
+      expect(() => {
+      mapper.publicKeyIntToXY({x: 5n, z: 8n});
+      }).toThrowError('Input must have properties x and y');
 });
 
 test('expect publicKeyIntToXY to throw an error for {x: undefined, y: undefined}', () => {
       expect(() => {
       mapper.publicKeyIntToXY();
-      }).toThrow();
+      }).toThrowError('input cannot be null or undefined.');
 });
 
 
 test('expect publicKeyIntToUint8ArrayPointPair to throw an error for {x: undefined, y: undefined}', () => {
       expect(() => {
       mapper.publicKeyHexToUint8ArrayPointPair();
-      }).toThrow();
+      }).toThrowError('input cannot be null or undefined.');
 });
 
+test('expect publicKeyIntToUint8ArrayPointPair to throw an error for {x: 5, y: 9}', () => {
+      expect(() => {
+      mapper.publicKeyIntToUint8ArrayPointPair({x: 5,y: 9});
+      }).toThrowError('Input coordinates must be BigInt');
+});
 
+test('expect publicKeyIntToUint8ArrayPointPair to throw an error for null', () => {
+      expect(() => {
+      mapper.publicKeyIntToUint8ArrayPointPair(null);
+      }).toThrowError('input cannot be null or undefined.');
+});
+
+test('expect publicKeyIntToUint8ArrayPointPair to throw an error for mislabled coordinate properties', () => {
+      expect(() => {
+      mapper.publicKeyIntToUint8ArrayPointPair({x: 5n, z: 7n});
+      }).toThrowError('Input must have properties x and y');
+});
+
+test('expect publicKeyIntToUint8ArrayPointPair to throw an error for a non object', () => {
+      expect(() => {
+      mapper.publicKeyIntToUint8ArrayPointPair(6);
+      }).toThrowError('Input must be an object with properties x and y');
+});
+/*
 test('expect publicKeyIntToUint8ArrayPointPair to throw an error for incorrect type', () => {
       expect(() => {
       mapper.publicKeyHexToUint8ArrayPointPair(5);
-      }).toThrow();
+      }).toThrowError('Input must be object with properties x and y');
 });
-
 
 test('expect publicKeyIntToUint8ArrayPointPair to throw an error for {x: null, y: null}', () => {
       expect(() => {
       mapper.publicKeyHexToUint8ArrayPointPair({x: null, y: null});
+      }).toThrowError('Input coordinates must be BigInt');
+});
+
+test('expect publicKeyIntToUint8ArrayPointPair to throw an error for null', () => {
+      expect(() => {
+      mapper.publicKeyIntToUint8ArrayPointPair({x: null, y: null});
+      }).toThrowError('input cannot be null or undefined.');
+});
+
+test('expect publicKeyIntToUint8ArrayPointPair to throw an error for null', () => {
+      expect(() => {
+      mapper.publicKeyIntToUint8ArrayPointPair(null);
+      }).toThrowError('input cannot be null or undefined.');
+});
+
+*/
+
+test('test testUint8Array with correct input', () => {
+   const inputCompressedPoint = Uint8Array.from([3,127,35,88,48,221,61,239,167,34,239,26,162,73,214,160,221,187,164,249,144,176,129,117,56,147,63,87,54,64,101,53,66]);
+   const publicKey_u8a = mapper.testUint8Array(inputCompressedPoint);
+   expect(publicKey_u8a).toEqual(true);
+});
+
+test('test testUint8Array with number', () => {
+   const inputCompressedPoint = 5;
+   const publicKey_u8a = mapper.testUint8Array(inputCompressedPoint);
+   expect(publicKey_u8a).toEqual(false);
+});
+
+test('test testUint8Array with number', () => {
+   const inputCompressedPoint = 'donkey';
+   const publicKey_u8a = mapper.testUint8Array(inputCompressedPoint);
+   expect(publicKey_u8a).toEqual(false);
+});
+
+test('test a hex string with unexpected input', () => {
+   const inputPublicKeyHex = '';
+   const publicKey_u8a = mapper.testHexString(inputPublicKeyHex);
+   expect(publicKey_u8a).toEqual(false);
+});
+
+test('test a hex string with unexpected input : try 2', () => {
+   const inputPublicKeyHex = 99;
+   const publicKey_u8a = mapper.testHexString(inputPublicKeyHex);
+   expect(publicKey_u8a).toEqual(false);
+});
+
+test('test a hex string shorter than 33 bytes', () => {
+   const inputPublicKeyHex = 'abc09';
+   const publicKey_u8a = mapper.testHexString(inputPublicKeyHex);
+   expect(publicKey_u8a).toEqual(true);
+});
+
+test('expect publicKeyIntToUint8ArrayPointPair to throw an error for {x: 4, y: 5}', () => {
+      expect(() => {
+      mapper.publicKeyHexToUint8ArrayPointPair();
       }).toThrow();
 });
 
 test('expect publicKeyIntToUint8ArrayPointPair to throw an error for {x: undefined, y: undefined}', () => {
       expect(() => {
-      mapper.publicKeyHexToUint8ArrayPointPair({x: undefined, y: undefined});
+      mapper.publicKeyHexToUint8ArrayPointPair();
       }).toThrow();
 });
 
@@ -141,11 +225,15 @@ test('expect publicKeyBytesToXY to throw an error for null', () => {
       }).toThrowError('input cannot be null or undefined.');
 });
 
+/*
 test('empty key string to should not evaluate to null, or should it??', () => {
    const inputPublicKeyHex = '';
-   const u8aPoint = mapper.publicKeyHexToUint8ArrayPointPair(inputPublicKeyHex);
-   expect(u8aPoint.xOctet).not.toEqual(null);
-   expect(u8aPoint.yOctet).not.toEqual(null);
+   //  const u8aPoint = mapper.publicKeyHexToUint8ArrayPointPair(inputPublicKeyHex);
+   expect(() => {
+      mapper.mapper.publicKeyHexToUint8ArrayPointPair(inputPublicKeyHex);
+   }).toThrowError('input cannot be null or undefined.');
+   //  expect(u8aPoint.xOctet).not.toEqual(null);
+   //  expect(u8aPoint.yOctet).not.toEqual(null);
  });
 
 

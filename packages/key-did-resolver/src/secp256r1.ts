@@ -119,7 +119,7 @@ export function pubKeyBytesToHex(pubKeyBytes: Uint8Array) : string {
  * @throws TypeError: input cannot be null or undefined.
  */
 export function publicKeyToXY(publicKeyHex: string) : base64urlPoint  {
-  if(publicKeyHex == null) {
+  if(!testHexString(publicKeyHex)) {
     throw new TypeError('input cannot be null or undefined.');
   }
  const u8aOctetPoint = publicKeyHexToUint8ArrayPointPair(publicKeyHex);
@@ -135,7 +135,7 @@ export function publicKeyToXY(publicKeyHex: string) : base64urlPoint  {
  * @throws TypeError: input cannot be null or undefined.
  */
 export function publicKeyHexToUint8ArrayPointPair(publicKeyHex: string) : octetPoint {
-    if(publicKeyHex == null) {
+    if(!testHexString(publicKeyHex)) {
       throw new TypeError('input cannot be null or undefined.');
     }
     const xHex = publicKeyHex.slice(0,publicKeyHex.length/2);
@@ -146,19 +146,62 @@ export function publicKeyHexToUint8ArrayPointPair(publicKeyHex: string) : octetP
 }
 
 /**
+ * Tests to see if the argument is a Hex String.
+ * @param str 
+ * @returns boolean
+ */
+export function testHexString(str : any) {
+ const regex = new RegExp(/^[A-Fa-f0-9]+/i);
+ if(regex.test(str)) {
+     if(str.length == regex.exec(str)[0].length) {
+         return true;
+     }
+  }
+  return false;
+}
+
+/**
+ * Test to see if the argument is the Uint8Array
+ * @param param 
+ * @returns boolean
+ */
+export function testUint8Array(param: any) {
+  if(param.constructor === Uint8Array) {
+     return true;
+  } else {
+     return false;
+  }
+}
+
+/**
  * 
  * @param ecpoint - public key. Cannot be null or undefined.
  * @returns Uint8Array with bytes as base16
  * @throws TypeError: input cannot be null or undefined.
- */
+ * @throws Error: Input coordinates must be BigInt
+ * @throws Error: Input must have properties x and y
+ * @throws TypeError: Input must be an object with properties x and y
+*/
 export function publicKeyIntToXY(ecpoint: BigIntPoint): base64urlPoint  {
-  if(ecpoint.x == null || ecpoint.y == null) {
-     throw new TypeError('input cannot be null or undefined.');
-   }
-  const u8aOctetPoint = publicKeyIntToUint8ArrayPointPair(ecpoint);
-  const xm = u8a.toString(multibase.encode('base64url',u8aOctetPoint.xOctet));
-  const ym = u8a.toString(multibase.encode('base64url',u8aOctetPoint.yOctet));
-  return { xm, ym };
+  if(ecpoint == null) {
+      throw new TypeError('input cannot be null or undefined.');
+  }
+  if(typeof ecpoint === "object") {
+    if(Object.prototype.hasOwnProperty.call(ecpoint, "x") &&  Object.prototype.hasOwnProperty.call(ecpoint, "y")) {
+       if(typeof ecpoint.x === "bigint" &&  typeof ecpoint.y === "bigint") {
+         const u8aOctetPoint = publicKeyIntToUint8ArrayPointPair(ecpoint);
+         const xm = u8a.toString(multibase.encode('base64url',u8aOctetPoint.xOctet));
+         const ym = u8a.toString(multibase.encode('base64url',u8aOctetPoint.yOctet));
+         return { xm, ym };
+       } else {
+         throw new Error("Input coordinates must be BigInt");
+       }
+    } else {
+       throw new Error("Input must have properties x and y");
+    }
+  } else {
+     throw new TypeError("Input must be an object with properties x and y")
+  }
 }
 
 /**
@@ -166,16 +209,31 @@ export function publicKeyIntToXY(ecpoint: BigIntPoint): base64urlPoint  {
  * @param ecpoint -  public key.  Cannot be null or undefined.
  * @returns Uint8Array with bytes as base10
  * @throws TypeError: input cannot be null or undefined.
+ * @throws Error: Input coordinates must be BigInt
+ * @throws Error: Input must have properties x and y
+ * @throws TypeError: Input must be an object with properties x and y
  */
 export function publicKeyIntToUint8ArrayPointPair(ecpoint: BigIntPoint) : octetPoint {
-  if(ecpoint.x == null || ecpoint.y == null || ecpoint === null || ecpoint === undefined) {
-     throw new TypeError('input cannot be null or undefined.');
-   }
-  const xHex = (ecpoint.x).toString();
-  const yHex = (ecpoint.y).toString();
-  const xOctet = u8a.fromString(xHex,'base10');
-  const yOctet = u8a.fromString(yHex,'base10');
-  return { xOctet, yOctet };
+  if(ecpoint == null) {
+      throw new TypeError('input cannot be null or undefined.');
+  }
+  if(typeof ecpoint === "object") {
+    if(Object.prototype.hasOwnProperty.call(ecpoint, "x") &&  Object.prototype.hasOwnProperty.call(ecpoint, "y")) {
+       if(typeof ecpoint.x === "bigint" &&  typeof ecpoint.y === "bigint") {
+         const xHex = (ecpoint.x).toString();
+         const yHex = (ecpoint.y).toString();
+         const xOctet = u8a.fromString(xHex,'base10');
+         const yOctet = u8a.fromString(yHex,'base10');
+         return { xOctet, yOctet };      
+       } else {
+         throw new Error("Input coordinates must be BigInt");
+       }
+    } else {
+       throw new Error("Input must have properties x and y");
+    }
+  } else {
+     throw new TypeError("Input must be an object with properties x and y")
+  }
 }
 
 /**
