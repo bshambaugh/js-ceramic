@@ -1,28 +1,10 @@
 // Brent Shambaugh <brent.shambaugh@gmail.com>. 2021.
 
 import * as u8a from 'uint8arrays'
-import * as bigintModArith from 'bigint-mod-arith'
+import * as bigintModArith from './bigint-mod-arith.js'
 
 import * as nist_weierstrass_common from './nist_weierstrass_common.js'
-
-/**
-  * x,y point as a BigInt (requires at least ES2020)
-  * For BigInt see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt
-  */
-interface BigIntPoint {
-   x: BigInt,
-   y : BigInt
-}
-
-/**
-  * xm,ym point with components expresse with base64url utilizing multiformats
-  *
-  * base64url is expressed in the Multibase Table: https://github.com/multiformats/multibase/blob/master/multibase.csv
-  */
-interface base64urlPoint {
-   xm: string,
-   ym: string
-}
+import { BigIntPoint, base64urlPoint } from './nist_weierstrass_common'
 
 /**
  * Constructs the document based on the method key

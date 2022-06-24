@@ -7,7 +7,7 @@ import { base64url } from 'multiformats/bases/base64'
   * x,y point as a BigInt (requires at least ES2020)
   * For BigInt see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt
   */
-interface BigIntPoint {
+export interface BigIntPoint {
    x: BigInt,
    y : BigInt
 }
@@ -17,7 +17,7 @@ interface BigIntPoint {
   *
   * base64url is expressed in the Multibase Table: https://github.com/multiformats/multibase/blob/master/multibase.csv
   */
-interface base64urlPoint {
+export interface base64urlPoint {
    xm: string,
    ym: string
 }
@@ -25,7 +25,7 @@ interface base64urlPoint {
 /**
   * Elliptic curve point with coordinates expressed as byte arrays (Uint8Array)
   */
-interface octetPoint {
+export interface octetPoint {
   xOctet: Uint8Array,
   yOctet: Uint8Array
 }
